@@ -1,9 +1,9 @@
 pipeline{
-    agent {label 'sonar'}
+    agent {label 'tomcat'}
     stages{
        stage('Git Checkout Stage'){
             steps{
-                git branch: 'main', url: 'https://github.com/sudheer76R/sonarqube-example.git'
+                git branch: 'main', url: 'https://github.com/ChetanaMJyothi/sonarqube-example.git'
             }
          }        
        stage('Build Stage'){
@@ -13,10 +13,15 @@ pipeline{
          }
         stage('SonarQube Analysis Stage') {
             steps{
-                withSonarQubeEnv('sonar') { 
-                    sh "mvn clean verify sonar:sonar -Dsonar.projectKey=demo-sonar"
+                withSonarQubeEnv('sonarQube') { 
+                    sh "mvn clean verify sonar:sonar -Dsonar.projectKey=sonar-sonar"
                 }
             }
         }
+        stage('Deploy'){
+            steps{
+                sh 'sudo cp /home/ec2-user/workspace/sonar-proj/target/MyWebApp.war /opt/tomcat/webapps'
+            }
+         }
     }
 }
